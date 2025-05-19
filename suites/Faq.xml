@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Faq">
+
+<!--    <listeners>-->
+<!--        <listener class-name="org.uncommons.reportng.HTMLReporter"/>-->
+<!--        <listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>-->
+<!--    </listeners>-->
+
+    <test verbose="2" preserve-order="true"
+          name="/Users/fazil.shaik/IdeaProjects/hrmsApiAutomation/src/test/java/com/jio/test/Faq">
+        <classes>
+            <class name="com.jio.test.Faq.GetFaqCategoriesTest">
+                <methods>
+                    <include name="getFaqCategoriesWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.Faq.AddFaqTest">
+                <methods>
+                    <include name="addFaqServiceWithValidDetails"/>
+                    <include name="addFaqWithInvalidCategory"/>
+                    <include name="addFaqWithoutQuestion"/>
+                    <include name="addFaqWithoutAnswer"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.Faq.GetFaqsTest">
+                <methods>
+                    <include name="getFaqWithValidDetails"/>
+                    <include name="getFaqSecondaryPageDetails"/>
+                    <include name="getFaqWithinValidOffsetValue"/>
+                    <include name="getFaqWithinValidPageDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.Faq.DeleteFaqTest">
+                <methods>
+                    <include name="deleteFaqApiWithValidDetails"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

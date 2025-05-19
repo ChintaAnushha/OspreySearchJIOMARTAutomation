@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!--<suite name="Survey">-->
+
+<!--    <listeners>-->
+<!--        <listener class-name="org.uncommons.reportng.HTMLReporter"/>-->
+<!--        <listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>-->
+<!--    </listeners>-->
+
+<!--    <test verbose="2" preserve-order="true"-->
+<!--          name="/Users/fazil.shaik/IdeaProjects/hrmsApiAutomation/src/test/java/com/jio/test/Survey">-->
+<!--        <classes>-->
+<!--            <class name="Com.jio.test.Survey.CreateSurveyTest">-->
+<!--                <methods>-->
+<!--                    <include name="createSurveyTestWithValidDetails"/>-->
+<!--                    <include name="createSurveyWithoutSurveyTitle"/>-->
+<!--                    <include name="createSurveyWithoutDescription"/>-->
+<!--&lt;!&ndash;                    <include name="createSurveyWithoutDocumentId"/>&ndash;&gt;-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.UpdateSurveyTest">-->
+<!--                <methods>-->
+<!--                    <include name="updateSurveyApiWithValidDetails"/>-->
+<!--                    <include name="updateSurveyServiceWithoutSurveyTitle"/>-->
+<!--                    <include name="updateSurveyApiWithoutDescription"/>-->
+<!--                    <include name="updateSurveyServiceWithoutDocumentId"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.AssigneeSurveyTest">-->
+<!--                <methods>-->
+<!--                    <include name="assignSurveyApiWithValidDetails"/>-->
+<!--                    <include name="assignSurveyWithinValidAssigneeId"/>-->
+<!--                    <include name="assignSurveyWithinValidExpireDate"/>-->
+<!--                    <include name="assignSurveyWithinValidSurveyId"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.GetAllSurveysTest">-->
+<!--                <methods>-->
+<!--&lt;!&ndash;                    <include name="getAllSurveys"/>&ndash;&gt;-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.GetAssigneeSurveyResponseTest">-->
+<!--                <methods>-->
+<!--                    <include name="getAllAssigneeSurveyWithValidData"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.GetSurveyDashboardDataTest">-->
+<!--                <methods>-->
+<!--                    <include name="getSurveyDashboardDataWithValidDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.GetSurveySubmittedCountTest">-->
+<!--                <methods>-->
+<!--                    <include name="getSurveySubmittedCountApiWithValidDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Survey.DeleteSurveyTest">-->
+<!--                <methods>-->
+<!--                    <include name="deleteSurveyApiWithValidDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--        </classes>-->
+<!--</test>-->
+<!--&lt;!&ndash;</suite>&ndash;&gt;-->

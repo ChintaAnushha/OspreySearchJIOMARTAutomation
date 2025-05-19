@@ -1,0 +1,182 @@
+testDataMap:
+  searchWithBrandFilter:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: Basmati Rice
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: relevance
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      fieldName: brand_string_mv
+      values: India Gate
+      sort_order: desc
+      page_number: 1
+  searchWithColorFilter:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: shirts
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: relevance
+      fieldName: verticalcolorfamily_en_string_mv
+      values: Red
+      sort_order: desc
+      page_number: 1
+  priceRangeFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: oil
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: price
+      fieldName: price
+      values: 1000|5000
+      sort_order: asc
+      page_number: 1
+  discountFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: shampoo
+      store: jiomart
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: discount_string
+      values: 21-30%
+      page_number: 1
+  genderFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: jeans
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: relevance
+      fieldName: genderfilter_en_string_mv
+      values: Women
+      sort_order: desc
+      page_number: 1
+  categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: jeans
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: relevance
+      fieldName: l1l3nestedcategory_en_string_mv
+      values: Women - Jeans & Jeggings
+      sort_order: desc
+      page_number: 1
+  sizeFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: jeans
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: relevance
+      fieldName: verticalsizegroupformat_en_string_mv
+      values: S
+      sort_order: desc
+      page_number: 1
+  multipleFiltersTest:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: jeans
+      store: rilfnl
+      records_per_page: 100
+      sort_field: price
+      gender_field_name: genderfilter_en_string_mv
+      gender_values: Women
+      category_field_name: l1l3nestedcategory_en_string_mv
+      category_value: Women - Jeans & Jeggings
+      sort_order: asc
+      page_number: 1
+  oneFiltersMultipleValues:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: shirts
+      store: rilfnl
+      records_per_page: 10000
+      sort_field: price
+      gender_field_name: genderfilter_en_string_mv
+      gender_values: Women,Men
+#      category_field_name: l1l3nestedcategory_en_string_mv
+#      category_value: Women - Jeans & Jeggings
+      sort_order: asc
+      page_number: 1
+  emptyFiltersVerify:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 422
+      query: shirts
+      store: rilfnl
+      filters: 123
+      records_per_page: 10000
+      page_number: 1
+#        gender_field_name: genderfilter_en_string_mv
+#        gender_values: Women,Men
+        #      category_field_name: l1l3nestedcategory_en_string_mv
+        #      category_value: Women - Jeans & Jeggings
+#        sort_order: asc
+  invalidBooleanFilterDataTypeVerify:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 422
+      query: shirts
+      store: rilfnl
+      filters: true
+      records_per_page: 10000
+      page_number: 1

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!--<suite name="SearchKeywords">-->
+<suite name="Osprey Search API Test Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="Com.jioMart.util.TestResultListener"/>
+        <listener class-name="Com.jioMart.util.RetryListener"/>
+<!--        <listener class-name="net.serenitybdd.testng.listeners.SerenityTestNGListener"/>-->
+<!--        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>-->
+    </listeners>
+
+<!--    <test name="API Tests" preserve-order="true">-->
+    <test name="Product Search Tests">
+        <classes>
+            <class name="Com.jioMart.test.OspreySearch.ProductSearchTest"/>
+
+        </classes>
+    </test>
+
+<!--    <test name="Search Filters Tests">-->
+<!--        <classes>-->
+<!--            <class name="Com.jioMart.test.OspreySearch.SearchWithFiltersTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--          <class name="Com.jioMart.test.OspreySearch.SearchWithFiltersTest"/>-->
+
+            <!-- Add other test classes here -->
+<!--        </classes>-->
+<!--    </test>-->
+</suite>
+
+<!--    <test verbose="2" preserve-order="true"-->
+<!--          name="/Users/fazil.shaik/IdeaProjects/hrmsApiAutomation/src/test/java/com/jio/test/SearchKeywords">-->
+<!--        <classes>-->
+<!--            <class name="Com.jio.test.OspreySearch.GetKeywordTest">-->
+<!--                <methods>-->
+<!--                    <include name="getFaqCategoriesWithValidDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="Com.jio.test.OspreySearch.AddFaqTest">-->
+<!--                <methods>-->
+<!--                    <include name="addFaqServiceWithValidDetails"/>-->
+<!--                    <include name="addFaqWithInvalidCategory"/>-->
+<!--                    <include name="addFaqWithoutQuestion"/>-->
+<!--                    <include name="addFaqWithoutAnswer"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Faq.GetFaqsTest">-->
+<!--                <methods>-->
+<!--                    <include name="getFaqWithValidDetails"/>-->
+<!--                    <include name="getFaqSecondaryPageDetails"/>-->
+<!--                    <include name="getFaqWithinValidOffsetValue"/>-->
+<!--                    <include name="getFaqWithinValidPageDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="com.jio.test.Faq.DeleteFaqTest">-->
+<!--                <methods>-->
+<!--                    <include name="deleteFaqApiWithValidDetails"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--</suite>-->
+<!--        <?xml version="1.0" encoding="UTF-8"?>-->
+<!--        <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">-->
+<!--<suite name="Osprey Search API Test Suite">-->
+<!--<listeners>-->
+<!--    <listener class-name="Com.jio.util.RetryListener"/>-->
+<!--    <listener class-name="Com.jio.util.TestResultListener"/>-->
+<!--    <listener class-name="io.qameta.allure.testng.AllureTestNg"/>-->
+<!--</listeners>-->
+
+<!--<test name="API Tests">-->
+<!--    <classes>-->
+<!--        <class name="Com.jio.test.OspreySearch.GetKeywordTest"/>-->
+<!--        &lt;!&ndash; Add other test classes here &ndash;&gt;-->
+<!--    </classes>-->
+<!--</test>-->
+<!--</suite>-->

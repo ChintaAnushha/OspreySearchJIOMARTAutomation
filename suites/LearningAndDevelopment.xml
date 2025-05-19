@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+<!--    <listeners>-->
+<!--        <listener class-name="org.uncommons.reportng.HTMLReporter"/>-->
+<!--        <listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>-->
+<!--    </listeners>-->
+    <test verbose="2" preserve-order="true"
+          name="LearningAndDevelopment">
+        <classes>
+            <class name="com.jio.test.LearningAndDevelopment.CreateCourseTest">
+                <methods>
+                    <include name="createCourseWithValidDetails"/>
+                    <include name="createCourseWithoutRruCourseId"/>
+                    <include name="createCourseWithoutTitle"/>
+                    <include name="createCourseWithoutDescription"/>
+                    <include name="createCourseWithoutDuration"/>
+                    <include name="createCourseWithoutRruDeeplink"/>
+                    <include name="createCourseWithoutMinCourseCoin"/>
+                    <include name="createCourseWithoutCourseCoins"/>
+                    <include name="createCourseWithoutCarrierCoin"/>
+                    <include name="createCourseWithInvalidProgramId"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.CreateNewJourneyTest">
+                <methods>
+                    <include name="createNewJourneyWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.CreateNewProgramTest">
+                <methods>
+                    <include name="createNewProgramWithValidDetails"/>
+                    <include name="createNewProgramWitNonSequential"/>
+                    <include name="createNewProgramWithoutProgramTitle"/>
+                    <include name="createNewProgramWithoutDescriptionField"/>
+                    <include name="createNewProgramWithoutSkillId"/>
+                    <include name="createNewProgramWithoutRoleId"/>
+                    <include name="createNewProgramWithoutCourse"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.CreateTagTest">
+                <methods>
+                    <include name="createRoleTagWithValidDetails"/>
+                    <include name="createSkillTagWithValidDetails"/>
+                    <include name="createTagWithEmptyTypeValue"/>
+                    <include name="createTagWithoutName"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.EditCarouselDataTest">
+                <methods>
+                    <include name="editCarouselDataWithValidData"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.EditJourneyTest">
+                <methods>
+                    <include name="editJourneyWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.EditProgramTest">
+                <methods>
+                    <include name="editProgramWithValidDetails"/>
+                    <include name="editProgramWitNonSequential"/>
+                    <include name="editProgramWithoutProgramTitle"/>
+                    <include name="editProgramWithoutDescriptionField"/>
+                    <include name="editProgramWithoutSkillId"/>
+                    <include name="editProgramWithoutRoleId"/>
+                    <include name="editProgramWithoutCourse"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.GetActiveWelcomeMessageTest">
+                <methods>
+                    <include name="getActiveWelcomeMessageWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.GetCarouselDataTest">
+                <methods>
+                    <include name="getCarouselDataWithValidData"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.GetCurrentProgramTest">
+                <methods>
+                    <include name="getCurrentProgramWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.GetInductionJourneyTest">
+                <methods>
+                    <include name="getInductionJourneyApiWithValidDetails"/>
+                </methods>
+            </class>
+<!--            <class name="com.jio.test.LearningAndDevelopment.GetJourneyDetailsTest">-->
+<!--                <methods>-->
+<!--                    <include name="getJourneyDetailsWithValidData"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+            <class name="com.jio.test.LearningAndDevelopment.GetProgramDetailsTest">
+                <methods>
+                    <include name="getProgramDetailsWithValidData"/>
+                    <include name="getProgramDetailsWithInvalidProgramId"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.GetSearchJourneyTest">
+                <methods>
+                    <include name="getSearchJourneyWithValidDetails"/>
+                    <include name="searchInvalidJourney"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.HomeEventsTest">
+                <methods>
+                    <include name="getHomeEventsWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.SearchCourseTest">
+                <methods>
+                    <include name="searchCourseWithValidDetails"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.SearchProgramTest">
+                <methods>
+                    <include name="searchProgramWithValidDetails"/>
+                    <include name="searchInvalidProgram"/>
+                </methods>
+            </class>
+            <class name="com.jio.test.LearningAndDevelopment.SetWelcomeMessageTest">
+                <methods>
+                    <include name="setWelcomeMessageWithValidDetails"/>
+                    <include name="setWelcomeMessageWithInvalidFile"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,17 @@
+{
+  "categories": [
+    {
+      "name": "Successful Tests",
+      "matchedStatuses": ["passed"],
+      "messageRegex": ".*",
+      "traceRegex": ".*"
+    },
+    {
+      "name": "Validation Tests",
+      "matchedStatuses": ["failed", "broken", "passed"],
+      "messageRegex": ".*",
+      "traceRegex": ".*"
+    }
+  ]
+}
+

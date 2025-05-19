@@ -1,0 +1,339 @@
+testDataMap:
+    ospreySearch:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfnl
+        records_per_page: 12
+        sort_field: relevance
+        fieldName: applicable_regions
+    productSearchValidQuery:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfnl
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        records_per_page: 12
+        page_number: 1
+    productSearchInvalidQuery:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: 04j@sdg
+        store: rilfnl
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        records_per_page: 12
+        page_number: 1
+    productSearchEmptyQuery:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: ""
+#        store: rilfnl
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        records_per_page: 12
+        sort_field: relevance
+    productSearchInvalidStore:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfn
+        records_per_page: 12
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+    productSearchNoStore:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: shampoo
+        records_per_page: 12
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+    searchWithPriceAsc:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfnl
+        records_per_page: 1000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: price
+        sort_order: asc
+        page_number: 1
+    searchWithPriceDesc:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: shampoo
+#        store: rilfnl
+        records_per_page: 100
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: price
+        sort_order: desc
+        page_number: 1
+    facetDataVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+        disable_facets: true
+    facetDataEnableVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: tops
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+        disable_facets: false
+    facetDataCountDisable:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: jeans
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+        enable_facet_values_count: false
+    facetDataCountEnable:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: shirts
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+        enable_facet_values_count: true
+    productSearchWithAttributes:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: oil
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+        sort_field: relevance
+        page_number: 1
+        attributes_to_retrieve: product_name
+    storeRedirectSearch:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: Calvin Klein men’s watches
+        store: rilfnl
+        records_per_page: 10000
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 1
+    exceptQueryNoOtherAttribute:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: seeds
+#        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+  #        store: rilfnl
+        records_per_page: 10000
+#        sort_field: relevance
+#        page_number: 1
+        enable_Facet_Counts: false
+        enable_facet_values_count: false
+        disable_facets: false
+    paginationVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: Jeans
+        store: rilfnl
+        records_per_page: 10
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        page_number: 2
+    invalidPageNumber:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: jeans for women
+        store: rilfnl
+        page_number: gap
+        records_per_page: 840
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,PANINDIASTL,
+          PANINDIAWELLNESS
+        sort_field: relevance
+    invalidRecordsOffset:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: shampoo
+        store: rilfnl
+        page_number: 1
+        records_per_page: 840
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        records_offset: "no"
+    recordsOffsetVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: jeans for women
+        store: rilfnl
+        page_number: 1
+        records_per_page: 12
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+        records_offset: 5
+    recordsPerPageVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 200
+        query: jeans for women
+        store: rilfnl
+        page_number: 1
+        records_per_page: 10
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+    invalidDataTypeVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: 111
+        store: rilfnl
+        page_number: 1
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+    invalidBooleanDataTypeVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: true
+        store: rilfnl
+        page_number: 1
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+        sort_field: relevance
+    invalidBooleanAndStringPageDataTypeVerify:
+      urls:
+        ospreySearchEndpoint: /couturesearch/v1/products/search
+      headersMap:
+        Content-Type: application/json
+        accept: application/json
+      otherParams:
+        expectedStatusCode: 422
+        query: jeans
+        store: rilfnl
+        page_number: gap
+        sort_field: relevance
+        applicable_regions: PANINDIABOOKS,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAGROCERIES,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL
+
+
+
+
+
+
+
+
+
+
+
