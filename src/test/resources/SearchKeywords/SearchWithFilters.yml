@@ -61,9 +61,9 @@ testDataMap:
       store: jiomart
       records_per_page: 10000
       applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
-      sort_field: relevance
-      fieldName: discount_string
-      values: 21-30%
+      sort_field: discount-desc
+#      fieldName: discount_string
+#      values: 21-30%
       page_number: 1
   genderFilterSearch:
     urls:
@@ -97,6 +97,91 @@ testDataMap:
       values: Women - Jeans & Jeggings
       sort_order: desc
       page_number: 1
+  L0categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: Oil
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: l0
+      values: Category
+      sort_order: desc
+      page_number: 1
+  L1categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: Oil
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: l1
+      values: Fashion
+      sort_order: desc
+      page_number: 1
+  L2categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: shampoo
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: l2
+      values: Personal Care
+      sort_order: desc
+      page_number: 1
+  L3categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: Oil
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: l3
+      values: Hair Care
+      sort_order: desc
+      page_number: 1
+  L4categoryFilterSearch:
+    urls:
+      ospreySearchEndpoint: /couturesearch/v1/products/search
+    headersMap:
+      Content-Type: application/json
+      accept: application/json
+    otherParams:
+      expectedStatusCode: 200
+      query: Oil
+      store: rilfnl
+      records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      fieldName: l4
+      values: Hair Oil & Serum
+      sort_order: desc
+      page_number: 1
   sizeFilterSearch:
     urls:
       ospreySearchEndpoint: /couturesearch/v1/products/search
@@ -121,15 +206,16 @@ testDataMap:
       accept: application/json
     otherParams:
       expectedStatusCode: 200
-      query: jeans
+      query: seeds
       store: rilfnl
-      records_per_page: 100
-      sort_field: price
-      gender_field_name: genderfilter_en_string_mv
-      gender_values: Women
-      category_field_name: l1l3nestedcategory_en_string_mv
-      category_value: Women - Jeans & Jeggings
-      sort_order: asc
+      records_per_page: 450
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
+      sort_field: relevance
+      l0Category_field_name: l0
+      category_values: Category
+      brand_field_name: brand_string_mv
+      brand_value: Good Life
+      sort_order: desc
       page_number: 1
   oneFiltersMultipleValues:
     urls:
@@ -139,12 +225,13 @@ testDataMap:
       accept: application/json
     otherParams:
       expectedStatusCode: 200
-      query: shirts
+      query: oil
       store: rilfnl
       records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
       sort_field: price
-      gender_field_name: genderfilter_en_string_mv
-      gender_values: Women,Men
+      categoryl3_field_name: l3
+      category_values: Masala & spices,Dals & Pulses
 #      category_field_name: l1l3nestedcategory_en_string_mv
 #      category_value: Women - Jeans & Jeggings
       sort_order: asc

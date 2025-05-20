@@ -233,11 +233,12 @@ public class OspreyApiServiceFilters extends BaseScript {
             ospreyAPIRequest.setStore(testDataParams.get("store"));
             ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
             ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+            ospreyAPIRequest.setRecordsperpage(450);
             ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
             ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
 
             // Set discount filter
-            ospreyAPIRequest.setDiscountFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+//            ospreyAPIRequest.setDiscountFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
 
             String applicableRegions = testDataParams.get("applicable_regions");
             if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
@@ -251,11 +252,290 @@ public class OspreyApiServiceFilters extends BaseScript {
             ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
             System.out.println("Search request body: " + ospreyApiRequestString);
 
-            executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+
+           // executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
             ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse, testData);
       //      ospreyAPIFiltersResponseValidator.validateBasicResponse();
-            ospreyAPIFiltersResponseValidator.validateDiscountResponse();
+            ospreyAPIFiltersResponseValidator.validateDiscountResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
 
+            softAssert.assertAll();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Step("Verify Osprey API product search with L0 category filter")
+    @Description("Test to verify product search functionality with category L0 filter")
+    public void productSearchWithL0CategoryFilter() {
+        try {
+            softAssert  = new SoftAssert();
+            this.testData = getYMLData(MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_FILTERS_FILEPATH, MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_L0CATEGORY_DATAKEY);
+            Map<String, String> testDataParams = testData.getOtherParams();
+            ospreyAPIRequest = new OspreyApiRequest();
+            ospreyAPIRequest.setQuery(testDataParams.get("query"));
+            ospreyAPIRequest.setStore(testDataParams.get("store"));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
+            ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
+            ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
+
+            // Set brand filter using the new method
+            ospreyAPIRequest.setL0CategoryFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
+
+
+            ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
+            System.out.println("Search request body: " + ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+            //  createRequest(softAssert);
+            ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse,testData);
+            //   ospreyAPIFiltersResponseValidator.validateBasicResponse();
+            ospreyAPIFiltersResponseValidator.validateL0CategoryFilterResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
+            softAssert.assertAll();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Step("Verify Osprey API product search with L1 category filter")
+    @Description("Test to verify product search functionality with category L1 filter")
+    public void productSearchWithL1CategoryFilter() {
+        try {
+            softAssert  = new SoftAssert();
+            this.testData = getYMLData(MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_FILTERS_FILEPATH, MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_L1CATEGORY_DATAKEY);
+            Map<String, String> testDataParams = testData.getOtherParams();
+            ospreyAPIRequest = new OspreyApiRequest();
+            ospreyAPIRequest.setQuery(testDataParams.get("query"));
+            ospreyAPIRequest.setStore(testDataParams.get("store"));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
+            ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
+            ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
+
+            // Set brand filter using the new method
+            ospreyAPIRequest.setL1CategoryFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
+
+
+            ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
+            System.out.println("Search request body: " + ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+            //  createRequest(softAssert);
+            ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse,testData);
+            //   ospreyAPIFiltersResponseValidator.validateBasicResponse();
+            ospreyAPIFiltersResponseValidator.validateL1CategoryFilterResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
+            softAssert.assertAll();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Step("Verify Osprey API product search with L2 category filter")
+    @Description("Test to verify product search functionality with category L2 filter")
+    public void productSearchWithL2CategoryFilter() {
+        try {
+            softAssert  = new SoftAssert();
+            this.testData = getYMLData(MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_FILTERS_FILEPATH, MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_L2CATEGORY_DATAKEY);
+            Map<String, String> testDataParams = testData.getOtherParams();
+            ospreyAPIRequest = new OspreyApiRequest();
+            ospreyAPIRequest.setQuery(testDataParams.get("query"));
+            ospreyAPIRequest.setStore(testDataParams.get("store"));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
+            ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
+            ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
+
+            // Set brand filter using the new method
+            ospreyAPIRequest.setL2CategoryFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
+
+
+            ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
+            System.out.println("Search request body: " + ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+            //  createRequest(softAssert);
+            ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse,testData);
+            //   ospreyAPIFiltersResponseValidator.validateBasicResponse();
+            ospreyAPIFiltersResponseValidator.validateL2CategoryFilterResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
+            softAssert.assertAll();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Step("Verify Osprey API product search with L3 category filter")
+    @Description("Test to verify product search functionality with category L3 filter")
+    public void productSearchWithL3CategoryFilter() {
+        try {
+            softAssert  = new SoftAssert();
+            this.testData = getYMLData(MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_FILTERS_FILEPATH, MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_L3CATEGORY_DATAKEY);
+            Map<String, String> testDataParams = testData.getOtherParams();
+            ospreyAPIRequest = new OspreyApiRequest();
+            ospreyAPIRequest.setQuery(testDataParams.get("query"));
+            ospreyAPIRequest.setStore(testDataParams.get("store"));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
+            ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
+            ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
+
+            // Set brand filter using the new method
+            ospreyAPIRequest.setL3CategoryFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
+
+
+            ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
+            System.out.println("Search request body: " + ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+            //  createRequest(softAssert);
+            ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse,testData);
+            //   ospreyAPIFiltersResponseValidator.validateBasicResponse();
+            ospreyAPIFiltersResponseValidator.validateL3CategoryFilterResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
+            softAssert.assertAll();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Step("Verify Osprey API product search with L4 category filter")
+    @Description("Test to verify product search functionality with category L4 filter")
+    public void productSearchWithL4CategoryFilter() {
+        try {
+            softAssert  = new SoftAssert();
+            this.testData = getYMLData(MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_FILTERS_FILEPATH, MicrositeYamlPathConstants.PRODUCT_SEARCH_WITH_L4CATEGORY_DATAKEY);
+            Map<String, String> testDataParams = testData.getOtherParams();
+            ospreyAPIRequest = new OspreyApiRequest();
+            ospreyAPIRequest.setQuery(testDataParams.get("query"));
+            ospreyAPIRequest.setStore(testDataParams.get("store"));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
+            ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
+            ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
+
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
+
+            // Set brand filter using the new method
+            ospreyAPIRequest.setL4CategoryFilter(testDataParams.get("fieldName"), testDataParams.get("values"));
+
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
+
+
+            ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
+            System.out.println("Search request body: " + ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
+            //  createRequest(softAssert);
+            ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse,testData);
+            //   ospreyAPIFiltersResponseValidator.validateBasicResponse();
+            ospreyAPIFiltersResponseValidator.validateL4CategoryFilterResponse(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
             softAssert.assertAll();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -375,40 +655,62 @@ public class OspreyApiServiceFilters extends BaseScript {
             // Set basic parameters
             ospreyAPIRequest.setQuery(testDataParams.get("query"));
             ospreyAPIRequest.setStore(testDataParams.get("store"));
-            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
-            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
             ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
             ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
 
+// Convert to integer and set it
+            //    ospreyAPIRequest.setRecordsPerPage(Integer.parseInt(recordsPerPageString));
+            //     ospreyAPIRequest.setRecordsperpage(Integer.parseInt(recordsPerPageString));
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            // Set page number
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
            // Set filters
 
             List<OspreyApiRequest.Filter> filters = new ArrayList<>();
-            OspreyApiRequest.Filter filter = new OspreyApiRequest.Filter();
-            ospreyAPIRequest.setFilters(filters);
+          //  OspreyApiRequest.Filter categoryfilter = new OspreyApiRequest.Filter();
+           // ospreyAPIRequest.setFilters(filters);
 
-            // Gender filter
-            OspreyApiRequest.Filter genderFilter = new OspreyApiRequest.Filter();
-            genderFilter.setFieldName(testDataParams.get("gender_field_name"));
-            genderFilter.setValues(Arrays.asList(testDataParams.get("gender_values").split(",")));
-            filters.add(genderFilter);
-
-            // Category filter
+            // category filter
             OspreyApiRequest.Filter categoryFilter = new OspreyApiRequest.Filter();
-            categoryFilter.setFieldName(testDataParams.get("category_field_name"));
-            categoryFilter.setValues(Collections.singletonList(testDataParams.get("category_value")));
+            categoryFilter.setFieldName(testDataParams.get("l0Category_field_name"));
+            categoryFilter.setValues(Arrays.asList(testDataParams.get("category_values").split(",")));
             filters.add(categoryFilter);
 
+            // brand filter
+            OspreyApiRequest.Filter brandFilter = new OspreyApiRequest.Filter();
+            brandFilter.setFieldName(testDataParams.get("brand_field_name"));
+            brandFilter.setValues(Collections.singletonList(testDataParams.get("brand_value")));
+            filters.add(brandFilter);
+
             ospreyAPIRequest.setFilters(filters);
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
 
             // Execute request
             ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
             System.out.println("Search request body: " + ospreyApiRequestString);
-            executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
+
+       //     executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
 
             // Validate response
             ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse, testData);
             //  ospreyAPIFiltersResponseValidator.validateBasicResponse();
-         //   ospreyAPIFiltersResponseValidator.validateMultipleFilters();
+             ospreyAPIFiltersResponseValidator.validateMultipleFilters(allDocs,
+                     firstPageResponse.getFacetData(),
+                     firstPageResponse.getNumFound(),
+                     testData);
 
             softAssert.assertAll();
         } catch (Exception ex) {
@@ -430,31 +732,51 @@ public class OspreyApiServiceFilters extends BaseScript {
             // Set basic parameters
             ospreyAPIRequest.setQuery(testDataParams.get("query"));
             ospreyAPIRequest.setStore(testDataParams.get("store"));
-            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));
-            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            //       String recordsPerPageString = testDataParams.get("records_per_page");
+            ospreyAPIRequest.setRecordsperpage(450); // Fixed page size for proper pagination
             ospreyAPIRequest.setSortfield(testDataParams.get("sort_field"));
             ospreyAPIRequest.setSortOrder(testDataParams.get("sort_order"));
 
+// Convert to integer and set it
+            ospreyAPIRequest.setRecordsperpage(Integer.parseInt(testDataParams.get("records_per_page")));
+            ospreyAPIRequest.setPageNumber(Integer.parseInt(testDataParams.get("page_number")));    // Set page number
+
             // Set up gender filter
             List<OspreyApiRequest.Filter> filters = new ArrayList<>();
-            OspreyApiRequest.Filter genderFilter = new OspreyApiRequest.Filter();
-            genderFilter.setFieldName(testDataParams.get("gender_field_name"));
-            genderFilter.setValues(Arrays.asList(testDataParams.get("gender_values").split(",")));
+            OspreyApiRequest.Filter categoryFilter = new OspreyApiRequest.Filter();
+            categoryFilter.setFieldName(testDataParams.get("categoryl3_field_name"));
+            categoryFilter.setValues(Arrays.asList(testDataParams.get("category_values").split(",")));
 //            genderFilter.setFieldName("genderfilter_en_string_mv");
 //            genderFilter.setValues(Arrays.asList(testDataParams.get("gender_values").split(",")));
 //            genderFilter.setOperator("OR");
-            filters.add(genderFilter);
+            filters.add(categoryFilter);
 
             ospreyAPIRequest.setFilters(filters);
+
+            String applicableRegions = testDataParams.get("applicable_regions");
+            if (applicableRegions != null && !applicableRegions.trim().isEmpty()) {
+                List<String> regionsList = Arrays.asList(applicableRegions.split("\\s*,\\s*"));
+                ospreyAPIRequest.setApplicableRegions(regionsList);
+                System.out.println("Setting applicable regions: " + String.join(", ", regionsList));
+            } else {
+                System.out.println("No applicable regions found in test data");
+            }
 
             // Execute request
             ospreyApiRequestString = objectMapper.writeValueAsString(ospreyAPIRequest);
             System.out.println("Gender filter request body: " + ospreyApiRequestString);
-            executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
+         //   executeRequestAndGetResponse(softAssert, ospreyApiRequestString);
+
+            OspreyApiResponse firstPageResponse = executeInitialOspreyRequest(softAssert);
+            List<OspreyApiResponse.Doc> allDocs = executeOspreyApiRequest(softAssert,ospreyAPIRequest, ospreyApiRequestString, testData);
+
 
             // Validate response
             ospreyAPIFiltersResponseValidator = new OspreyAPIFiltersResponseValidator(ospreyApiResponse, testData);
-         //   ospreyAPIFiltersResponseValidator.validateOneFilterMultipleValues();
+            ospreyAPIFiltersResponseValidator.validateOneFilterMultipleValues(allDocs,
+                    firstPageResponse.getFacetData(),
+                    firstPageResponse.getNumFound(),
+                    testData);
 
             softAssert.assertAll();
         } catch (Exception ex) {
@@ -528,6 +850,8 @@ public class OspreyApiServiceFilters extends BaseScript {
                     rootNode.put("filters", filterStr);
                 }
             }
+
+
 
 // Convert to JSON string for request
            ospreyApiRequestString = objectMapper.writeValueAsString(rootNode);

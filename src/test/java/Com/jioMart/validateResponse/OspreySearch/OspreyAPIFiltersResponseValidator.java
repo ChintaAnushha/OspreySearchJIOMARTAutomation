@@ -13,6 +13,7 @@ import org.testng.annotations.Listeners;
 import org.testng.asserts.SoftAssert;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Listeners({ AllureTestNg.class })
 public class OspreyAPIFiltersResponseValidator extends BaseScript {
@@ -214,6 +215,7 @@ public class OspreyAPIFiltersResponseValidator extends BaseScript {
          }
 
 
+
     @Step("Validate price range filter response")
     public void validatePriceRangeResponse() {
         log.info("Price Range Filter Validation Started");
@@ -349,139 +351,1218 @@ public class OspreyAPIFiltersResponseValidator extends BaseScript {
     }
 
     @Step("Validate discount filter response")
-    public void validateDiscountResponse() {
-        log.info("=================== Discount Filter Validation Started ===================");
+    public void validateDiscountResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) {
+//        log.info("=================== Discount Filter Validation Started ===================");
+//
+//        // Get discount range from test data
+//        String discountRange = testData.getOtherParams().get("values");
+//        String[] rangeLimits = discountRange.split("-");
+//        int minDiscount = Integer.parseInt(rangeLimits[0]);
+//        int maxDiscount = Integer.parseInt(rangeLimits[1].replace("%", ""));
+//
+////        double minDiscount = Double.parseDouble(rangeLimits[0]);
+////        double maxDiscount = Double.parseDouble(rangeLimits[1].replace("%", ""));
+//
+//        //log.info(String.format("Validating discount range:%.1%% to %.1f%%", minDiscount, maxDiscount));
+//        log.info(String.format("Validating discount range: %d%% to %d%%", minDiscount, maxDiscount));
+//
+//        int numFound = ospreyApiResponse.getNumFound();
+//        Map<String, Object> facetCounts = ospreyApiResponse.getFacetData();
+//        int facetCount = getFacetCountForDiscount(facetCounts, discountRange,minDiscount,maxDiscount);
+//        List<OspreyApiResponse.Doc> products = ospreyApiResponse.getDocs();
+//        int docsCount = products.size();
+//        //   boolean allProductsInRange = true;
+//        int productsInRange = 0;
+//        boolean testFailed = false;
+//
+//        log.info("\n========== Product Discount Analysis ==========");
+//        StringBuilder discountDetails = new StringBuilder();
+//
+//        //   for (int i = 0; i < products.size(); i++) {
+//        for(OspreyApiResponse.Doc product : products) {
+//            Double productDiscount = product.getAvgDiscount();
+//            //   double productDiscount = extractDiscountPercentage(Stri)
+//            //  double productDiscount = extractDiscountPercentage(String.valueOf(discountString));
+//            String productName = product.getProductName();
+//
+//            boolean inRange = false;
+//            if (productDiscount != null && productDiscount >= 0) {  // Ensure discount is valid
+//                // Round to handle floating point precision
+//                inRange = productDiscount >= minDiscount && productDiscount <= maxDiscount;
+////                 double roundedDiscount = Math.round(productDiscount * 100.0) / 100.0;
+////                 inRange = roundedDiscount >= minDiscount && roundedDiscount <= maxDiscount;
+//            }
+//
+//            if (inRange) {
+//                productsInRange++;
+//            }
+//
+//            String discountLog = String.format(
+//                    "Product:\n" +
+//                            "Name: %s\n" +
+//                            "Discount: %.1f%%\n" +
+//                            "In Range: %s\n" +
+//                            "------------------------",
+//                    productName,
+//                    productDiscount,
+//                    inRange ? "Yes" : "No"
+//            );
+//            log.info(discountLog);
+//            discountDetails.append(discountLog).append("\n");
+//        }
+//
+//        log.info(String.format("\nDiscount Range Debug:\n" +
+//                        "Min Discount: %.1f%%\n" +
+//                        "Max Discount: %.1f%%\n" +
+//                        "Total Products: %d\n" +
+//                        "Products in Range: %d\n",
+//                minDiscount, maxDiscount, products.size(), productsInRange));
+//
+//        // Strict validation checks
+//        boolean productsExactMatch = (productsInRange == products.size());
+//        boolean countsMatch = (numFound == facetCount);
+//        boolean docsMatch = (numFound == docsCount);
+//        boolean exactMatch = productsExactMatch && countsMatch && docsMatch;
+//
+//        log.info("\n========== Validation Results ==========");
+//        log.info(String.format("Total Products: %d", products.size()));
+//        log.info(String.format("Products in Range: %d", productsInRange));
+//        log.info(String.format("Products Match Status: %s", productsExactMatch ? "PASSED" : "FAILED"));
+//        log.info(String.format("Overall Status: %s", exactMatch ? "PASSED" : "FAILED"));
+//
+//        // Force test failure if not exact match
+//        if (!exactMatch) {
+//            String errorMessage = String.format(
+//                    "Validation Failed:\n" +
+//                            "Products in range: %d/%d\n" +
+//                            "NumFound: %d\n" +
+//                            "FacetCount: %d\n" +
+//                            "DocsCount: %d",
+//                    productsInRange, products.size(),
+//                    numFound, facetCount, docsCount
+//            );
+//            log.error(errorMessage);
+//            Assert.fail(errorMessage);
+//        }
+//
+//        DiscountStats stats = calculateDiscountStats(products);
+//
+//        Allure.addAttachment("Discount Filter Results", String.format(
+//                "Test Summary:\n" +
+//                        "-------------\n" +
+//                        "Discount Range: %.1f%% - %.1f%%\n" +
+//                        "Total Products: %d\n" +
+//                        "Products in Range: %d\n\n" +
+//                        "Count Validation:\n" +
+//                        "----------------\n" +
+//                        "Products Match Status: %s\n" +
+//                        "NumFound: %d\n" +
+//                        "Facet Count: %d\n" +
+//                        "Docs Count: %d\n" +
+//                        "Overall Status: %s\n\n" +
+//                        "Discount Statistics:\n" +
+//                        "-------------------\n" +
+//                        "Minimum Discount: %.1f%%\n" +
+//                        "Maximum Discount: %.1f%%\n" +
+//                        "Average Discount: %.1f%%\n\n" +
+//                        "Validation Message: %s",
+//                minDiscount,
+//                maxDiscount,
+//                products.size(),
+//                productsInRange,
+//                productsExactMatch ? "MATCHED" : String.format("FAILED (%d/%d)", productsInRange, products.size()),
+//                numFound,
+//                facetCount,
+//                docsCount,
+//                exactMatch ? "PASSED" : "FAILED",
+//                stats.getMinDiscount(),
+//                stats.getMaxDiscount(),
+//                stats.getAverageDiscount(),
+//                exactMatch ? "All validations passed successfully":
+//                        String.format("Failed: %d products outside range, count mismatches found",
+//                                products.size() - productsInRange)  // %s
+//        ));
+//        log.info("=================== Discount Filter Validation Completed ===================");
 
-        // Get discount range from test data
-        String discountRange = testData.getOtherParams().get("values");
-        String[] rangeLimits = discountRange.split("-");
-        int minDiscount = Integer.parseInt(rangeLimits[0]);
-        int maxDiscount = Integer.parseInt(rangeLimits[1].replace("%", ""));
+        log.info("=================== Discount Descending Order Validation Started ===================");
 
-//        double minDiscount = Double.parseDouble(rangeLimits[0]);
-//        double maxDiscount = Double.parseDouble(rangeLimits[1].replace("%", ""));
+        boolean isSorted = true;
+        StringBuilder validationDetails = new StringBuilder();
+        Double previousDiscount = null;
 
-        //log.info(String.format("Validating discount range:%.1%% to %.1f%%", minDiscount, maxDiscount));
-        log.info(String.format("Validating discount range: %d%% to %d%%", minDiscount, maxDiscount));
-
-        int numFound = ospreyApiResponse.getNumFound();
-        Map<String, Object> facetCounts = ospreyApiResponse.getFacetData();
-        int facetCount = getFacetCountForDiscount(facetCounts, discountRange,minDiscount,maxDiscount);
-        List<OspreyApiResponse.Doc> products = ospreyApiResponse.getDocs();
-        int docsCount = products.size();
-        //   boolean allProductsInRange = true;
-        int productsInRange = 0;
-        boolean testFailed = false;
-
-        log.info("\n========== Product Discount Analysis ==========");
-        StringBuilder discountDetails = new StringBuilder();
-
-        //   for (int i = 0; i < products.size(); i++) {
-        for(OspreyApiResponse.Doc product : products) {
-            Double productDiscount = product.getAvgDiscount();
-            //   double productDiscount = extractDiscountPercentage(Stri)
-            //  double productDiscount = extractDiscountPercentage(String.valueOf(discountString));
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Double currentDiscount = product.getAvgDiscount();
             String productName = product.getProductName();
 
-            boolean inRange = false;
-            if (productDiscount != null && productDiscount >= 0) {  // Ensure discount is valid
-                // Round to handle floating point precision
-                inRange = productDiscount >= minDiscount && productDiscount <= maxDiscount;
-//                 double roundedDiscount = Math.round(productDiscount * 100.0) / 100.0;
-//                 inRange = roundedDiscount >= minDiscount && roundedDiscount <= maxDiscount;
-            }
-
-            if (inRange) {
-                productsInRange++;
-            }
-
+            // Log current product discount
             String discountLog = String.format(
-                    "Product:\n" +
-                            "Name: %s\n" +
-                            "Discount: %.1f%%\n" +
-                            "In Range: %s\n" +
-                            "------------------------",
+                    "Product: %s, Discount: %.1f%%",
                     productName,
-                    productDiscount,
-                    inRange ? "Yes" : "No"
+                    currentDiscount != null ? currentDiscount : 0.0
             );
-            log.info(discountLog);
-            discountDetails.append(discountLog).append("\n");
+            validationDetails.append(discountLog).append("\n");
+
+            // Check descending order
+            if (previousDiscount != null && currentDiscount != null) {
+                if (currentDiscount > previousDiscount) {
+                    isSorted = false;
+                    validationDetails.append(String.format(
+                            "Order violation: Current (%.1f%%) > Previous (%.1f%%)\n",
+                            currentDiscount, previousDiscount
+                    ));
+                }
+            }
+            previousDiscount = currentDiscount;
         }
 
-        log.info(String.format("\nDiscount Range Debug:\n" +
-                        "Min Discount: %.1f%%\n" +
-                        "Max Discount: %.1f%%\n" +
-                        "Total Products: %d\n" +
-                        "Products in Range: %d\n",
-                minDiscount, maxDiscount, products.size(), productsInRange));
+        // Calculate statistics
+        DoubleSummaryStatistics stats = allDocs.stream()
+                .map(OspreyApiResponse.Doc::getAvgDiscount)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .summaryStatistics();
 
-        // Strict validation checks
-        boolean productsExactMatch = (productsInRange == products.size());
-        boolean countsMatch = (numFound == facetCount);
-        boolean docsMatch = (numFound == docsCount);
-        boolean exactMatch = productsExactMatch && countsMatch && docsMatch;
-
-        log.info("\n========== Validation Results ==========");
-        log.info(String.format("Total Products: %d", products.size()));
-        log.info(String.format("Products in Range: %d", productsInRange));
-        log.info(String.format("Products Match Status: %s", productsExactMatch ? "PASSED" : "FAILED"));
-        log.info(String.format("Overall Status: %s", exactMatch ? "PASSED" : "FAILED"));
-
-        // Force test failure if not exact match
-        if (!exactMatch) {
-            String errorMessage = String.format(
-                    "Validation Failed:\n" +
-                            "Products in range: %d/%d\n" +
-                            "NumFound: %d\n" +
-                            "FacetCount: %d\n" +
-                            "DocsCount: %d",
-                    productsInRange, products.size(),
-                    numFound, facetCount, docsCount
-            );
-            log.error(errorMessage);
-            Assert.fail(errorMessage);
-        }
-
-        DiscountStats stats = calculateDiscountStats(products);
-
-        Allure.addAttachment("Discount Filter Results", String.format(
+        // Create Allure report
+        Allure.addAttachment("Discount Sort Order Results", String.format(
                 "Test Summary:\n" +
                         "-------------\n" +
-                        "Discount Range: %.1f%% - %.1f%%\n" +
                         "Total Products: %d\n" +
-                        "Products in Range: %d\n\n" +
-                        "Count Validation:\n" +
-                        "----------------\n" +
-                        "Products Match Status: %s\n" +
-                        "NumFound: %d\n" +
-                        "Facet Count: %d\n" +
-                        "Docs Count: %d\n" +
-                        "Overall Status: %s\n\n" +
+                        "Sort Order: %s\n\n" +
                         "Discount Statistics:\n" +
                         "-------------------\n" +
                         "Minimum Discount: %.1f%%\n" +
                         "Maximum Discount: %.1f%%\n" +
                         "Average Discount: %.1f%%\n\n" +
-                        "Validation Message: %s",
-                minDiscount,
-                maxDiscount,
-                products.size(),
-                productsInRange,
-                productsExactMatch ? "MATCHED" : String.format("FAILED (%d/%d)", productsInRange, products.size()),
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                allDocs.size(),
+                isSorted ? "CORRECT (Descending)" : "INCORRECT",
+                stats.getMin(),
+                stats.getMax(),
+                stats.getAverage(),
+                validationDetails.toString()
+        ));
+
+        // Assert the sort order
+        if (!isSorted) {
+            String errorMessage = "Discount values are not in descending order";
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        log.info("=================== Discount Sort Order Validation Completed ===================");
+    }
+
+    @Step("Validate L0 category filter response, count and pagination")
+    public void validateL0CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L0 Category Filter Validation Started ============");
+
+        String expectedL0Category = this.testData.getOtherParams().get("values");
+        if (expectedL0Category == null || expectedL0Category.trim().isEmpty()) {
+            throw new IllegalArgumentException("L0 Category value is missing in test data");
+        }
+        expectedL0Category = expectedL0Category.toLowerCase().trim();
+        log.info("Validating L0 Category: " + expectedL0Category);
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+        //    String productL0Category = String.valueOf(product.productCategoryHierarchy.getL0());
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            String productL0Category = "No category";
+            if (hierarchy != null && hierarchy.get("l0") != null && !hierarchy.get("l0").isEmpty()) {
+                productL0Category = hierarchy.get("l0").get(0);
+                if (productL0Category != null) {
+                    matches = productL0Category.toLowerCase().trim().equals(expectedL0Category);
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L0 Category: %s, Expected: %s, Matches: %s",
+                    productName, productL0Category, expectedL0Category, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL0 Category: %s\nExpected Category: %s\nMatches: %s\n---\n",
+                    productName,
+                  //  productL0Category != null ? productL0Category : "No category",
+                    productL0Category,
+                    expectedL0Category,
+                    matches ? "Yes" : "No"
+            ));
+        }
+
+        // Get facet count from l0_category_name
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l0_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.equals(expectedL0Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Rest of the validation logic remains the same
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L0 Category: %s", expectedL0Category));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L0 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        // Create Allure report
+        Allure.addAttachment("L0 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L0 Category: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL0Category,
                 numFound,
                 facetCount,
                 docsCount,
-                exactMatch ? "PASSED" : "FAILED",
-                stats.getMinDiscount(),
-                stats.getMaxDiscount(),
-                stats.getAverageDiscount(),
-                exactMatch ? "All validations passed successfully":
-                        String.format("Failed: %d products outside range, count mismatches found",
-                                products.size() - productsInRange)  // %s
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
         ));
-        log.info("=================== Discount Filter Validation Completed ===================");
+
+        log.info("=================== L0 Category Filter Validation Completed ============");
     }
+
+    @Step("Validate L1 category filter response, count and pagination")
+    public void validateL1CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L1 Category Filter Validation Started ============");
+
+        String expectedL1Category = this.testData.getOtherParams().get("values");
+        if (expectedL1Category == null || expectedL1Category.trim().isEmpty()) {
+            throw new IllegalArgumentException("L1 Category value is missing in test data");
+        }
+        expectedL1Category = expectedL1Category.toLowerCase().trim();
+        log.info("Validating L1 Category: " + expectedL1Category);
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            //    String productL0Category = String.valueOf(product.productCategoryHierarchy.getL0());
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            String productL1Category = "No category";
+//            if (hierarchy != null && hierarchy.get("l1") != null && !hierarchy.get("l1").isEmpty()) {
+
+//                productL1Category = hierarchy.get("l1").get(0);
+//                if (productL1Category != null) {
+//                    matches = productL1Category.toLowerCase().trim().contains(expectedL1Category);
+//                }
+//            }
+            if (hierarchy != null) {
+                // Check each level in hierarchy
+                for (Map.Entry<String, List<String>> entry : hierarchy.entrySet()) {
+                    List<String> categories = entry.getValue();
+                    if (categories != null) {
+                        // Check if category exists in the list, regardless of position
+                        String finalExpectedL1Category = expectedL1Category;
+                        matches = categories.stream()
+                                .anyMatch(category -> category != null &&
+                                        category.toLowerCase().trim().equals(finalExpectedL1Category));
+                        if (matches) break;
+                    }
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L1 Category: %s, Expected: %s, Matches: %s",
+                    productName, productL1Category, expectedL1Category, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL1 Category: %s\nExpected Category: %s\nMatches: %s\n---\n",
+                    productName,
+                    //productL1Category != null ? productL1Category : "No category",
+                    productL1Category,
+                    expectedL1Category,
+                    matches ? "Yes" : "No"
+
+            ));
+        }
+
+        // Get facet count
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l1_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.contains(expectedL1Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L1 Category: %s", expectedL1Category));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L1 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        // Create Allure report
+        Allure.addAttachment("L1 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L1 Category: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL1Category,
+                numFound,
+                facetCount,
+                docsCount,
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        log.info("=================== L1 Category Filter Validation Completed ============");
+    }
+
+    @Step("Validate L2 category filter response, count and pagination")
+    public void validateL2CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L2 Category Filter Validation Started ============");
+
+        String expectedL2Category = this.testData.getOtherParams().get("values");
+        if (expectedL2Category == null || expectedL2Category.trim().isEmpty()) {
+            throw new IllegalArgumentException("L2 Category value is missing in test data");
+        }
+        expectedL2Category = expectedL2Category.toLowerCase().trim();
+        log.info("Validating L2 Category: " + expectedL2Category);
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            //    String productL0Category = String.valueOf(product.productCategoryHierarchy.getL0());
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            String productL2Category = "No category";
+//            if (hierarchy != null && hierarchy.get("l2") != null && !hierarchy.get("l2").isEmpty()) {
+//                productL2Category = hierarchy.get("l2").get(0);
+//                if (productL2Category != null) {
+//                    matches = productL2Category.toLowerCase().trim().equals(expectedL2Category);
+//                }
+//            }
+            if (hierarchy != null) {
+                // Check each level in hierarchy
+                for (Map.Entry<String, List<String>> entry : hierarchy.entrySet()) {
+                    List<String> categories = entry.getValue();
+                    if (categories != null) {
+                        // Check if category exists in the list, regardless of position
+                        String finalExpectedL2Category = expectedL2Category;
+                        matches = categories.stream()
+                                .anyMatch(category -> category != null &&
+                                        category.toLowerCase().trim().equals(finalExpectedL2Category));
+                        if (matches) break;
+                    }
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L2 Category: %s, Expected: %s, Matches: %s",
+                    productName, productL2Category, expectedL2Category, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL2 Category: %s\nExpected Category: %s\nMatches: %s\n---\n",
+                    productName,
+                    //productL1Category != null ? productL1Category : "No category",
+                    productL2Category,
+                    expectedL2Category,
+                    matches ? "Yes" : "No"
+
+            ));
+        }
+
+        // Get facet count
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l2_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.equals(expectedL2Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L2 Category: %s", expectedL2Category));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L2 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        // Create Allure report
+        Allure.addAttachment("L2 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L2 Category: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL2Category,
+                numFound,
+                facetCount,
+                docsCount,
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        log.info("=================== L2 Category Filter Validation Completed ============");
+    }
+
+    @Step("Validate L3 category filter response, count and pagination")
+    public void validateL3CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L3 Category Filter Validation Started ============");
+
+        String expectedL3Category = this.testData.getOtherParams().get("values");
+        if (expectedL3Category == null || expectedL3Category.trim().isEmpty()) {
+            throw new IllegalArgumentException("L3 Category value is missing in test data");
+        }
+        expectedL3Category = expectedL3Category.toLowerCase().trim();
+        log.info("Validating L3 Category: " + expectedL3Category);
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            //    String productL0Category = String.valueOf(product.productCategoryHierarchy.getL0());
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            String productL3Category = "No category";
+            if (hierarchy != null) {
+                // Check each level in hierarchy
+                for (Map.Entry<String, List<String>> entry : hierarchy.entrySet()) {
+                    List<String> categories = entry.getValue();
+                    if (categories != null) {
+                        // Check if category exists in the list, regardless of position
+                        String finalExpectedL3Category = expectedL3Category;
+                        matches = categories.stream()
+                                .anyMatch(category -> category != null &&
+                                        category.toLowerCase().trim().equals(finalExpectedL3Category));
+                        if (matches) break;
+                    }
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L3 Category: %s, Expected: %s, Matches: %s",
+                    productName, productL3Category, expectedL3Category, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL3 Category: %s\nExpected Category: %s\nMatches: %s\n---\n",
+                    productName,
+                    //productL1Category != null ? productL1Category : "No category",
+                    productL3Category,
+                    expectedL3Category,
+                    matches ? "Yes" : "No"
+
+            ));
+        }
+
+        // Get facet count
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l3_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.equals(expectedL3Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L3 Category: %s", expectedL3Category));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L3 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        // Create Allure report
+        Allure.addAttachment("L3 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L3 Category: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL3Category,
+                numFound,
+                facetCount,
+                docsCount,
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        log.info("=================== L3 Category Filter Validation Completed ============");
+    }
+
+    @Step("Validate L4 category filter response, count and pagination")
+    public void validateL4CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L4 Category Filter Validation Started ============");
+
+        String expectedL4Category = this.testData.getOtherParams().get("values");
+        if (expectedL4Category == null || expectedL4Category.trim().isEmpty()) {
+            throw new IllegalArgumentException("L4 Category value is missing in test data");
+        }
+        expectedL4Category = expectedL4Category.toLowerCase().trim();
+        log.info("Validating L4 Category: " + expectedL4Category);
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            //    String productL0Category = String.valueOf(product.productCategoryHierarchy.getL0());
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            String productL4Category = "No category";
+            if (hierarchy != null) {
+                // Check each level in hierarchy
+                for (Map.Entry<String, List<String>> entry : hierarchy.entrySet()) {
+                    List<String> categories = entry.getValue();
+                    if (categories != null) {
+                        // Check if category exists in the list, regardless of position
+                        String finalExpectedL4Category = expectedL4Category;
+                        matches = categories.stream()
+                                .anyMatch(category -> category != null &&
+                                        category.toLowerCase().trim().equals(finalExpectedL4Category));
+                        if (matches) break;
+                    }
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L4 Category: %s, Expected: %s, Matches: %s",
+                    productName, productL4Category, expectedL4Category, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL4 Category: %s\nExpected Category: %s\nMatches: %s\n---\n",
+                    productName,
+                    //productL1Category != null ? productL1Category : "No category",
+                    productL4Category,
+                    expectedL4Category,
+                    matches ? "Yes" : "No"
+
+            ));
+        }
+
+        // Get facet count
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l4_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.equals(expectedL4Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L4 Category: %s", expectedL4Category));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L4 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+        // Create Allure report
+        Allure.addAttachment("L4 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L4 Category: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL4Category,
+                numFound,
+                facetCount,
+                docsCount,
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        log.info("=================== L4 Category Filter Validation Completed ============");
+    }
+
+    @Step("Validating Multiple Filters")
+    public void validateMultipleFilters(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== Multiple Filters Validation Started ===================");
+
+        String expectedL0Category = testData.getOtherParams().get("category_values");
+        String expectedBrand = testData.getOtherParams().get("brand_value");
+
+        if (expectedL0Category == null || expectedL0Category.trim().isEmpty() ||
+                expectedBrand == null || expectedBrand.trim().isEmpty()) {
+            throw new IllegalArgumentException("L0 Category or Brand value is missing in test data");
+        }
+
+        expectedL0Category = expectedL0Category.toLowerCase().trim();
+        expectedBrand = expectedBrand.toLowerCase().trim();
+        log.info("Validating L0 Category: " + expectedL0Category + " and Brand: " + expectedBrand);
+
+        int matchingCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+        // Validate each product
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            String productName = product.getProductName();
+            String productBrand = product.getBrandName();
+
+            boolean categoryMatch = false;
+            boolean brandMatch = false;
+
+            // Check L0 Category
+            if (hierarchy != null && hierarchy.get("l0") != null) {
+                List<String> l0Categories = hierarchy.get("l0");
+                String finalExpectedL0Category = expectedL0Category;
+                categoryMatch = l0Categories.stream()
+                        .anyMatch(cat -> cat != null &&
+                                cat.toLowerCase().trim().equals(finalExpectedL0Category));
+            }
+
+            // Check Brand
+            if (productBrand != null) {
+                brandMatch = productBrand.toLowerCase().trim().equals(expectedBrand);
+            }
+
+            boolean matches = categoryMatch && brandMatch;
+            if (matches) {
+                matchingCount++;
+            }
+
+            productDetails.append(String.format(
+                    "Product: %s\n" +
+                            "L0 Category: %s (Match: %s)\n" +
+                            "Brand: %s (Match: %s)\n" +
+                            "Overall Match: %s\n---\n",
+                    productName,
+                    hierarchy != null ? hierarchy.get("l0") : "No category",
+                    categoryMatch ? "Yes" : "No",
+                    productBrand != null ? productBrand : "No brand",
+                    brandMatch ? "Yes" : "No",
+                    matches ? "Yes" : "No"
+            ));
+        }
+
+        // Get facet counts
+     //   int categoryFacetCount = getFacetCount(facetData, "l0_category_name", expectedL0Category);
+     //   int brandFacetCount = getFacetCount(facetData, "brand_string_mv", expectedBrand);
+
+        int categoryFacetCount = numFound; // Default to numFound
+        int brandFacetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            // Check L0 category facets
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l0_category_name");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (categoryName.equals(expectedL0Category)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            categoryFacetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Check brand facets
+            List<Map<String, Object>> brandFacets = (List<Map<String, Object>>) facetData.get("brand_string_mv");
+            if (brandFacets != null) {
+                for (Map<String, Object> facet : brandFacets) {
+                    String brandName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (brandName.equals(expectedBrand)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            brandFacetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (matchingCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetsMatchNumFound = (categoryFacetCount == numFound && brandFacetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetsMatchNumFound;
+
+        // Log validation results
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L0 Category: %s, Brand: %s", expectedL0Category, expectedBrand));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Category Facet Count: %d", categoryFacetCount));
+        log.info(String.format("Brand Facet Count: %d", brandFacetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", matchingCount));
+
+        // Create Allure report
+        Allure.addAttachment("L0 Category and Brand Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L0 Category: %s\n" +
+                        "Brand: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Category Facet Count: %d\n" +
+                        "Brand Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filters: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Facets Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                expectedL0Category, expectedBrand, numFound,
+                categoryFacetCount, brandFacetCount, docsCount, matchingCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetsMatchNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        // Assert results
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L0 Category and Brand Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Category Facet Count: %d\n" +
+                            "Brand Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, categoryFacetCount, brandFacetCount, docsCount, matchingCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+    }
+
+    @Step("Validating Multiple Values")
+    public void validateOneFilterMultipleValues(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+        log.info("=================== L3 Category Filter Multiple Values Validation Started ============");
+
+        String[] expectedL3Categories = this.testData.getOtherParams().get("category_values").split(",");
+        if (expectedL3Categories == null || expectedL3Categories.length == 0) {
+            throw new IllegalArgumentException("L3 Category values are missing in test data");
+        }
+// Normalize expected categories
+        List<String> normalizedExpectedCategories = Arrays.stream(expectedL3Categories)
+                .map(cat -> cat.toLowerCase().trim())
+                .collect(Collectors.toList());
+        log.info("Validating L3 Categories: " + String.join(", ", normalizedExpectedCategories));
+
+        int categoryMatchCount = 0;
+        StringBuilder productDetails = new StringBuilder();
+
+// Calculate category match count
+        for (OspreyApiResponse.Doc product : allDocs) {
+            Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+            String productName = product.getProductName();
+
+            boolean matches = false;
+            List<String> productL3Categories = new ArrayList<>();
+            if (hierarchy != null) {
+                // Get L3 categories from hierarchy
+                List<String> l3Categories = hierarchy.get("l3");
+                if (l3Categories != null) {
+                    productL3Categories = l3Categories;
+                    // Check if any of the expected categories match
+                    for (String expectedl3Category : normalizedExpectedCategories) {
+                        matches = l3Categories.stream()
+                                .anyMatch(category -> category != null &&
+                                        category.toLowerCase().trim().equals(expectedl3Category));
+                        if (matches) break;
+                    }
+                }
+            }
+            if (matches) {
+                categoryMatchCount++;
+            }
+
+            // Log detailed product information
+            log.info(String.format("Checking product: %s, L3 Categories: %s, Expected: %s, Matches: %s",
+                    productName, productL3Categories, normalizedExpectedCategories, matches));
+
+            productDetails.append(String.format(
+                    "Product: %s\nL3 Categories: %s\nExpected Categories: %s\nMatches: %s\n---\n",
+                    productName,
+                    productL3Categories.isEmpty() ? "No categories" : String.join(", ", productL3Categories),
+                    String.join(", ", normalizedExpectedCategories),
+                    matches ? "Yes" : "No"
+            ));
+        }
+
+// Get facet counts
+//        int totalFacetCount = 0;
+//        if (facetData != null) {
+//            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l3_category_name");
+//            if (categoryFacets != null) {
+//                for (String expectedCategory : normalizedExpectedCategories) {
+//                    for (Map<String, Object> facet : categoryFacets) {
+//                        String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+//                        if (categoryName.equals(expectedCategory)) {
+//                            Object valueObj = facet.get("value");
+//                            if (valueObj instanceof Number) {
+//                                totalFacetCount += ((Number) valueObj).intValue();
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        // Get facet count
+        int facetCount = numFound; // Default to numFound
+
+        if (facetData != null) {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l3_category_name");
+            if (categoryFacets != null) {
+                for (String expectedl3Category : normalizedExpectedCategories) {
+                    for (Map<String, Object> facet : categoryFacets) {
+                        String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                        if (categoryName.equals(expectedl3Category)) {
+                            Object valueObj = facet.get("value");
+                            if (valueObj instanceof Number) {
+                                facetCount = ((Number) valueObj).intValue();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+// Validate counts
+        int docsCount = allDocs.size();
+        boolean docsMatchFilter = (categoryMatchCount == docsCount);
+        boolean docsMatchNumFound = (docsCount == numFound);
+        boolean facetMatchesNumFound = (facetCount == numFound);
+        boolean allCountsMatch = docsMatchFilter && docsMatchNumFound && facetMatchesNumFound;
+
+        log.info("\n========== Validation Results ==========");
+        log.info(String.format("L3 Categories: %s", String.join(", ", normalizedExpectedCategories)));
+        log.info(String.format("NumFound Count: %d", numFound));
+        log.info(String.format("Total Facet Count: %d", facetCount));
+        log.info(String.format("Docs Count: %d", docsCount));
+        log.info(String.format("Matching Products: %d", categoryMatchCount));
+
+        if (!allCountsMatch) {
+            String errorMessage = String.format(
+                    "L3 Category Filter Validation Failed:\n" +
+                            "NumFound Count: %d\n" +
+                            "Total Facet Count: %d\n" +
+                            "Docs Count: %d\n" +
+                            "Matching Products: %d",
+                    numFound, facetCount, docsCount, categoryMatchCount
+            );
+            log.error(errorMessage);
+            Assert.fail(errorMessage);
+        }
+
+// Create Allure report
+        Allure.addAttachment("L3 Category Filter Results", String.format(
+                "Test Summary:\n" +
+                        "-------------\n" +
+                        "L3 Categories: %s\n" +
+                        "NumFound Count: %d\n" +
+                        "Total Facet Count: %d\n" +
+                        "Docs Count: %d\n" +
+                        "Matching Products: %d\n\n" +
+                        "Validation Status:\n" +
+                        "----------------\n" +
+                        "All Products Match Filter: %s\n" +
+                        "Facet Matches NumFound: %s\n" +
+                        "Docs Match NumFound: %s\n" +
+                        "Overall Status: %s\n\n" +
+                        "Product Details:\n" +
+                        "---------------\n%s",
+                String.join(", ", normalizedExpectedCategories),
+                numFound,
+                facetCount,
+                docsCount,
+                categoryMatchCount,
+                docsMatchFilter ? "Yes" : "No",
+                docsMatchNumFound ? "Yes" : "No",
+                facetMatchesNumFound ? "Yes" : "No",
+                allCountsMatch ? "PASSED" : "FAILED",
+                productDetails.toString()
+        ));
+
+        log.info("=================== Gender Filter Validation Completed ===================");
+    }
+
+    private int getFacetCount(Map<String, Object> facetData, String facetField, String expectedValue) {
+        if (facetData == null || !facetData.containsKey(facetField)) {
+            return 0;
+        }
+
+        List<Map<String, Object>> facets = (List<Map<String, Object>>) facetData.get(facetField);
+        if (facets != null) {
+            for (Map<String, Object> facet : facets) {
+                String name = String.valueOf(facet.get("name")).toLowerCase().trim();
+                if (name.equals(expectedValue)) {
+                    Object valueObj = facet.get("value");
+                    if (valueObj instanceof Number) {
+                        return ((Number) valueObj).intValue();
+                    }
+                }
+            }
+        }
+        return ospreyApiResponse.getNumFound();
+    }
+
 
     private int getFacetCountForSize(Map<String, List<Map<String, Object>>> facetData, String size) {
         if (facetData == null || size == null) {

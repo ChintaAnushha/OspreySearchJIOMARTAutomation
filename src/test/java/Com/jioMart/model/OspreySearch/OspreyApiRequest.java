@@ -176,6 +176,51 @@ public class OspreyApiRequest {
         this.filters = filters;
     }
 
+    public void setL0CategoryFilter(String fieldName, String category) {
+        List<Filter> filters = new ArrayList<>();
+        Filter l0Filter = new Filter();
+        l0Filter.setFieldName(fieldName);
+        l0Filter.setValues(Collections.singletonList(category));
+        filters.add(l0Filter);
+        this.filters = filters;
+    }
+
+    public void setL1CategoryFilter(String fieldName, String category) {
+        List<Filter> filters = new ArrayList<>();
+        Filter l1Filter = new Filter();
+        l1Filter.setFieldName(fieldName);
+        l1Filter.setValues(Collections.singletonList(category));
+        filters.add(l1Filter);
+        this.filters = filters;
+    }
+
+    public void setL2CategoryFilter(String fieldName, String category) {
+        List<Filter> filters = new ArrayList<>();
+        Filter l2Filter = new Filter();
+        l2Filter.setFieldName(fieldName);
+        l2Filter.setValues(Collections.singletonList(category));
+        filters.add(l2Filter);
+        this.filters = filters;
+    }
+
+    public void setL3CategoryFilter(String fieldName, String category) {
+        List<Filter> filters = new ArrayList<>();
+        Filter l3Filter = new Filter();
+        l3Filter.setFieldName(fieldName);
+        l3Filter.setValues(Collections.singletonList(category));
+        filters.add(l3Filter);
+        this.filters = filters;
+    }
+
+    public void setL4CategoryFilter(String fieldName, String category) {
+        List<Filter> filters = new ArrayList<>();
+        Filter l4Filter = new Filter();
+        l4Filter.setFieldName(fieldName);
+        l4Filter.setValues(Collections.singletonList(category));
+        filters.add(l4Filter);
+        this.filters = filters;
+    }
+
     public void setSizeFilter(String fieldName, String size) {
         List<Filter> filters = new ArrayList<>();
         Filter sizeFilter = new Filter();

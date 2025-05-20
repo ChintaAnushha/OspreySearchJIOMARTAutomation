@@ -175,6 +175,12 @@ public class MicrositeYamlPathConstants {
     public static final String PRODUCT_SEARCH_WITH_ONEFILTERMULTIPLEVALUES_DATAKEY = "oneFiltersMultipleValues";
     public static final String PRODUCT_SEARCH_WITH_EMPTYFILTERS_DATAKEY = "emptyFiltersVerify";
     public static final String PRODUCT_SEARCH_WITH_INVALIDBOOLEANDATA_DATAKEY = "invalidBooleanFilterDataTypeVerify";
+    public static final String PRODUCT_SEARCH_WITH_L0CATEGORY_DATAKEY = "L0categoryFilterSearch";
+    public static final String PRODUCT_SEARCH_WITH_L1CATEGORY_DATAKEY = "L1categoryFilterSearch";
+    public static final String PRODUCT_SEARCH_WITH_L2CATEGORY_DATAKEY = "L2categoryFilterSearch";
+    public static final String PRODUCT_SEARCH_WITH_L3CATEGORY_DATAKEY = "L3categoryFilterSearch";
+    public static final String PRODUCT_SEARCH_WITH_L4CATEGORY_DATAKEY = "L4categoryFilterSearch";
+
 
 
 
