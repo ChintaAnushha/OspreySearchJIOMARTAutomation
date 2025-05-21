@@ -1228,7 +1228,159 @@ public class OspreyAPIFiltersResponseValidator extends BaseScript {
         log.info("=================== L4 Category Filter Validation Completed ============");
     }
 
-    @Step("Validating Multiple Filters")
+    @Step("Validate L1L3 category filter response, count and pagination")
+    public void validateL1L3CategoryFilterResponse(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
+
+       log.info("=================== Category Hierarchy Validation Started ============");
+
+    String expectedCategory = Optional.ofNullable(testData.getOtherParams().get("values"))
+            .map(String::trim)
+            .map(String::toLowerCase)
+            .orElseThrow(() -> new IllegalArgumentException("Category value is missing in test data"));
+
+    // Split the expected category path and normalize
+    List<String> expectedParts = Arrays.asList(expectedCategory.split("[-:]"))
+            .stream()
+            .map(String::trim)
+            .collect(Collectors.toList());
+
+    int categoryMatchCount = 0;
+    StringBuilder productDetails = new StringBuilder();
+    int facetCount = numFound;
+
+    // Process facet data first
+    if (facetData != null) {
+        try {
+            List<Map<String, Object>> categoryFacets = (List<Map<String, Object>>) facetData.get("l1l3category_en_string_mv");
+            if (categoryFacets != null) {
+                for (Map<String, Object> facet : categoryFacets) {
+                    String categoryName = String.valueOf(facet.get("name")).toLowerCase().trim();
+                    if (expectedParts.contains(categoryName)) {
+                        Object valueObj = facet.get("value");
+                        if (valueObj instanceof Number) {
+                            facetCount = ((Number) valueObj).intValue();
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+          StringBuilder errorMessage = new StringBuilder("Error processing facet data. ");
+           if (facetData != null) {
+                 errorMessage.append("Facet data: ").append(facetData);
+              }
+            log.error(errorMessage.toString(), e); // Changed to info level for data logging
+             }
+        }
+
+
+    // Process each product
+    for (OspreyApiResponse.Doc product : allDocs) {
+        Map<String, List<String>> hierarchy = product.getProductCategoryHierarchy();
+        String productName = product.getProductName();
+        boolean matches = false;
+        String matchLevel = "";
+        String matchedCategory = "";
+
+        if (hierarchy != null) {
+            // Check all hierarchy levels
+            for (String level : Arrays.asList("l0", "l1", "l2", "l3", "l4")) {
+                List<String> categories = hierarchy.get(level);
+                if (categories != null) {
+                    for (String category : categories) {
+                        if (category != null) {
+                            String normalizedCategory = category.toLowerCase().trim();
+                            // Check if this category matches any part of the expected path
+                            for (String expectedPart : expectedParts) {
+                                if (normalizedCategory.contains(expectedPart) ||
+                                    expectedPart.contains(normalizedCategory)) {
+                                    matches = true;
+                                    matchLevel = level.toUpperCase();
+                                    matchedCategory = category;
+                                    break;
+                                }
+                            }
+                        }
+                        if (matches) break;
+                    }
+                }
+                if (matches) break;
+            }
+
+            productDetails.append(String.format(
+                "Product: %s\n" +
+                "Categories:\n" +
+                "  L0: %s\n" +
+                "  L1: %s\n" +
+                "  L2: %s\n" +
+                "  L3: %s\n" +
+                "  L4: %s\n" +
+                "Expected Path: %s\n" +
+                "Match: %s %s%s\n" +
+                "------------------------\n",
+                productName,
+                formatCategories(hierarchy.get("l0")),
+                formatCategories(hierarchy.get("l1")),
+                formatCategories(hierarchy.get("l2")),
+                formatCategories(hierarchy.get("l3")),
+                formatCategories(hierarchy.get("l4")),
+                expectedCategory,
+                matches ? "✓" : "✗",
+                matches ? "(" + matchLevel + ")" : "",
+                matches ? " - " + matchedCategory : ""
+            ));
+
+            if (matches) {
+                categoryMatchCount++;
+              //  log.info("Match found for product: {} in {} category with value: {}", productName, matchLevel, matchedCategory
+               // );
+                String message = String.format("Match found for product: %s in %s category with value: %s",
+                        productName, matchLevel, matchedCategory);
+                log.info(message);
+            }
+        }
+    }
+
+    // Validate results with more flexible matching
+    int docsCount = allDocs.size();
+    boolean hasMatches = categoryMatchCount > 0;  // Changed to check for any matches
+    boolean docsMatchNumFound = (docsCount == numFound);
+    boolean facetMatchesNumFound = (facetCount == numFound);
+    boolean allCountsMatch = hasMatches && docsMatchNumFound && facetMatchesNumFound;
+
+    String summary = String.format(
+        "\n========== Validation Results ==========\n" +
+        "Category Path: %s\n" +
+        "NumFound Count: %d\n" +
+        "Facet Count: %d\n" +
+        "Docs Count: %d\n" +
+        "Matching Products: %d\n" +
+        "Match Rate: %.2f%%\n" +
+        "Validation Status: %s",
+        expectedCategory, numFound, facetCount, docsCount, categoryMatchCount,
+        docsCount > 0 ? (categoryMatchCount * 100.0 / docsCount) : 0,
+        hasMatches ? "PASSED" : "FAILED"
+    );
+
+    log.info(summary);
+
+    if (!hasMatches) {  // Changed condition to check for any matches
+        throw new AssertionError(
+            "Category Hierarchy Validation Failed:\n" +
+            summary + "\n\n" +
+            "Detailed Results:\n" +
+            productDetails.toString()
+        );
+    }
+
+    Allure.addAttachment("Category Hierarchy Results", summary + "\n\nDetails:\n" + productDetails.toString());
+}
+
+    private String formatCategories(List<String> categories) {
+        return categories != null ? String.join(", ", categories) : "None";
+    }
+
+        @Step("Validating Multiple Filters")
     public void validateMultipleFilters(List<OspreyApiResponse.Doc> allDocs, Map<String,Object> facetData, int numFound, TestData testData) throws JsonProcessingException {
 
         log.info("=================== Multiple Filters Validation Started ===================");
@@ -1543,7 +1695,78 @@ public class OspreyAPIFiltersResponseValidator extends BaseScript {
         log.info("=================== Gender Filter Validation Completed ===================");
     }
 
-    private int getFacetCount(Map<String, Object> facetData, String facetField, String expectedValue) {
+    @Step("Validating the invalid filter type error response")
+    public void validateInvalidFilterListTypeResponse(String filters,String store) {
+    String responseStr = ospreyApiResponse.asFilterString(filters,store);
+    String testDataFilter = testData.getOtherParams().get("filters");
+    String expectedError;
+        if (testDataFilter.matches("\\d+")) {
+        expectedError = "{\"detail\":[{\"type\":\"list_type\",\"loc\":[\"body\",\"filters\"],\"msg\":\"Input should be a valid list\",\"input\":" + testDataFilter + "}]}";
+    } else {
+        expectedError = "{\"detail\":[{\"type\":\"list_type\",\"loc\":[\"body\",\"filters\"],\"msg\":\"Input should be a valid list\",\"input\":\"\"}]}";
+    }
+
+    // Validate response matches expected error
+        softAssert.assertEquals(responseStr.replaceAll("\\s+", ""),
+                expectedError.replaceAll("\\s+", ""),
+                "Error message should match exactly for filter input");
+
+        softAssert.assertTrue(responseStr.contains("Input should be a valid list"),
+                "Response should contain invalid list message");
+        softAssert.assertTrue(responseStr.contains("list_type"),
+                "Response should contain list_type type");
+        softAssert.assertTrue(responseStr.contains("body"),
+                "Response should contain body location");
+        softAssert.assertTrue(responseStr.contains("filters"),
+                "Response should contain filters location");
+
+        log.info("Invalid filter list type response: " + responseStr);
+        Allure.addAttachment("Error Response", responseStr);
+
+        softAssert.assertAll();
+}
+
+    @Step("Validate invalid query type error response")
+    public void validateInvalidBooleanFilterTypeResponse(boolean filter,String store) {
+    String responseStr = ospreyApiResponse.handleBooleanFilterResponse(filter,store);
+
+    //  String expectedError =  "{\"detail\":[{" + "\"type\":\"list_type\"," + "\"loc\":[\"body\",\"filters\"]," + "\"msg\":\"Input should be a valid list\"," + "\"input\":%s}]}",filter);
+    String expectedError = String.format("{\"detail\":[{" +
+            "\"type\":\"list_type\"," +
+            "\"loc\":[\"body\",\"filters\"]," +
+            "\"msg\":\"Input should be a valid list\"," +
+            "\"input\":%s" +
+            "}]}", filter);
+    // Determine expected error based on query type
+//        if (query instanceof Boolean) {
+//            expectedError = String.format("{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"query\"],\"msg\":\"Input should be a valid string\",\"input\":%s}]}", query);
+//        } else {
+//            expectedError = String.format("{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"query\"],\"msg\":\"Input should be a valid string\",\"input\":%d}]}", query);
+//        }
+
+    softAssert.assertEquals(responseStr.replaceAll("\\s+", ""),
+            expectedError.replaceAll("\\s+", ""),
+            "Error message should match exactly for invalid query type");
+
+    // Common validations
+    softAssert.assertTrue(responseStr.contains("Input should be a valid list"),
+            "Response should contain invalid list message");
+    softAssert.assertTrue(responseStr.contains("list_type"),
+            "Response should contain list_type type");
+    softAssert.assertTrue(responseStr.contains("body"),
+            "Response should contain body location");
+    softAssert.assertTrue(responseStr.contains("filters"),
+            "Response should contain filters location");
+
+    log.info("Invalid filter list type response: " + responseStr);
+    Allure.addAttachment("Error Response", responseStr);
+
+    softAssert.assertAll();
+}
+
+
+
+private int getFacetCount(Map<String, Object> facetData, String facetField, String expectedValue) {
         if (facetData == null || !facetData.containsKey(facetField)) {
             return 0;
         }

@@ -89,12 +89,13 @@ testDataMap:
       accept: application/json
     otherParams:
       expectedStatusCode: 200
-      query: jeans
+      query: oil
       store: rilfnl
       records_per_page: 10000
+      applicable_regions: PANINDIABOOKS,PANINDIAGROCERIES,PANINDIAGROCERY,PANINDIACOUPONS,PANINDIACRAFT,PANINDIADIGITAL,PANINDIAFASHION,PANINDIAFINANCE,PANINDIAFURNITURE,6243,PANINDIAHOMEANDKITCHEN,PANINDIAHOMEIMPROVEMENT,PANINDIAJEWEL,QCPANINDIAGROCERIES,PANINDIASTL,PANINDIAWELLNESS
       sort_field: relevance
-      fieldName: l1l3nestedcategory_en_string_mv
-      values: Women - Jeans & Jeggings
+      fieldName: l1l3category_en_string_mv
+      values: "Groceries: Staples - Whole Spices"
       sort_order: desc
       page_number: 1
   L0categoryFilterSearch:
@@ -262,7 +263,7 @@ testDataMap:
       accept: application/json
     otherParams:
       expectedStatusCode: 422
-      query: shirts
+      query: oil
       store: rilfnl
       filters: true
       records_per_page: 10000

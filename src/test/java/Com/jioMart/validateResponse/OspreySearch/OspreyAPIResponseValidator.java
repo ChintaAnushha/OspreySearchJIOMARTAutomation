@@ -914,45 +914,7 @@ public class OspreyAPIResponseValidator extends BaseScript {
 
     @Step("Validate missing field error response")
     public void validateMissingFieldResponse(String query,String filters) throws IOException {
-//        String responseStr = ospreyApiResponse.asString(query,filters);
-//      //  String expectedError = "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"store\"],\"msg\":\"Field required\",\"input\":{\"query\":\"Jeans\",\"sort_field\":\"relevance\",\"records_per_page\":2}}]}";
-//
-//        String expectedError = "{\n" +
-//                "    \"detail\": [\n" +
-//                "        {\n" +
-//                "            \"type\": \"value_error\",\n" +
-//                "            \"loc\": [\n" +
-//                "                \"body\"\n" +
-//                "            ],\n" +
-//                "            \"msg\": \"Value error, A filter with fieldName 'applicable_regions' is required.\",\n" +
-//                "            \"input\": {\n" +
-//                "                \"query\": \"seeds\"\n" +
-//                "            },\n" +
-//                "            \"ctx\": {\n" +
-//                "                \"error\": {}\n" +
-//                "            }\n" +
-//                "        }\n" +
-//                "    ]\n" +
-//                "}";
-//
-//        softAssert.assertEquals(responseStr.replaceAll("\\s+", ""),
-//                expectedError.replaceAll("\\s+", ""),
-//                "Error message should match exactly for missing field");
-//
-//        softAssert.assertTrue(responseStr.contains("value_error"),
-//                "Response should contain 'value_error' as type");
-//        softAssert.assertTrue(responseStr.contains("body"),
-//                "Response should contain 'body' in location");
-//        softAssert.assertTrue(responseStr.contains(expectedError),
-//                "Response should contain the expected error message about 'applicable_regions'");
-//        softAssert.assertTrue(responseStr.contains(query),
-//                "Response should include the original query: " + query);
-//
-//        log.info("Missing field response: " + responseStr);
-//        Allure.addAttachment("Error Response", responseStr);
-//
-//        softAssert.assertAll();
-        // Fetching the actual API response as a string
+
         String responseStr = ospreyApiResponse.asString(query, filters);
 
         // Parsing the response string into a JsonNode for easy traversal
